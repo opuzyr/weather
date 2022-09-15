@@ -29,8 +29,8 @@ cargo build --release
 `weather list` - lists the current configuration. App shows you provider's name, **API_KEY** and whether it is default.
 
 ```
-Name: OpenWeather, API_KEY: not set, default: true
-Name: Accuweather, API_KEY: not set, default: false
+Provider: OpenWeather, API_KEY: not set, default: true
+Provider: Accuweather, API_KEY: not set, default: false
 
 ```
 ### Configure API_KEY:
