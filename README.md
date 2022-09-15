@@ -50,7 +50,30 @@ Accuweather's API_KEY:
 ````
 >***Note**: The last provider **API_KEY** is configured for automatically becomes default one.*
 
-Configuration is saved into **json_storage.json** file. It is possible to manually edit the content to set 
+Configuration is saved into **json_storage.json** file. It is possible to manually edit the content to set **API_KEY** and make a provider default one:
+
+```json
+{
+  "path": "json_storage.json",
+  "configs": {
+    "Accuweather": {
+      "AccuweatherProvider": {
+        "provider_name": "Accuweather",
+        "api_key": null
+      }
+    },
+    "OpenWeather": {
+      "OpenWeatherProvider": {
+        "provider_name": "OpenWeather",
+        "api_key": null
+      }
+    }
+  },
+  "default": "OpenWeather"
+}
+
+```
+
 
 
 ### Setting default provider:
