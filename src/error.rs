@@ -16,7 +16,7 @@ pub enum WeatherError {
     #[error("Failed to fetch report data")]
     ReportDataError,
 
-    /// Something not ok with one implementing [`Storage`].
+    /// Something not ok with one implementing [`crate::storage::storage_api::Storage`].
     #[error("Failed to read config file")]
     ReadConfigFileError(String),
 
