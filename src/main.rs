@@ -97,7 +97,7 @@ fn main() -> Result<(), WeatherError> {
             storage.get_all().iter().for_each(|provider| {
                 let is_default = provider.0.eq(&default_provider.get_name());
                 println!(
-                    "Name: {}, API_KEY: {}, default: {}",
+                    "Provider: {}, API_KEY: {}, default: {}",
                     provider.0,
                     provider
                         .1
