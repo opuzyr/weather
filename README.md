@@ -3,7 +3,7 @@ Yet another CLI weather app.
 
 ## Description
 
-This is a simple CLI application written in Rust to grab weather data from <b>OpenWeather</b> and <b>Accuweather</b> 
+This is a simple CLI application written in Rust to grab weather data from  [**OpenWeather**](https://openweathermap.org)  and [**Accuweather**](https://developer.accuweather.com) 
 providers. Currently the only one entry report contains of is temperature. Also no historical records provided so there is no possibility to get a report for specified date.
 
 
