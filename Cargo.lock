@@ -1158,7 +1158,6 @@ dependencies = [
  "chrono",
  "clap",
  "dyn-clone",
- "once_cell",
  "reqwest",
  "rprompt",
  "serde",
