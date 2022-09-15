@@ -1,5 +1,5 @@
 [package]
-name = "fetch-weather-cli"
+name = "weather"
 version = "0.1.0"
 edition = "2021"
 

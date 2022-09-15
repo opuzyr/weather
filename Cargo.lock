@@ -179,22 +179,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "fetch-weather-cli"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "clap",
- "dyn-clone",
- "once_cell",
- "reqwest",
- "rprompt",
- "serde",
- "serde_json",
- "thiserror",
- "typetag",
-]
-
-[[package]]
 name = "fnv"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1166,6 +1150,22 @@ name = "wasm-bindgen-shared"
 version = "0.2.83"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1c38c045535d93ec4f0b4defec448e4291638ee608530863b1e2ba115d4fff7f"
+
+[[package]]
+name = "weather"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "clap",
+ "dyn-clone",
+ "once_cell",
+ "reqwest",
+ "rprompt",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "typetag",
+]
 
 [[package]]
 name = "web-sys"

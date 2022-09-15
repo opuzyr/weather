@@ -13,12 +13,8 @@ use crate::storage::json_storage::JsonStorage;
 
 static JSON_STORAGE_FILE: &str = "json_storage.json";
 
-
 #[derive(Parser)]
-#[clap(
-    version,
-    about = "Provides temperature for specified city. "
-)]
+#[clap(version, about = "Provides weather report for specified city. ")]
 struct Args {
     #[clap(subcommand)]
     command: Commands,
@@ -27,7 +23,6 @@ struct Args {
 /// Commands supported by the app.
 #[derive(Subcommand)]
 enum Commands {
-
     /// Configure weather's provider.
     Configure {
         #[clap(value_name = "provider")]
@@ -53,7 +48,7 @@ enum Commands {
     },
 
     /// List available providers.
-    List
+    List,
 }
 
 fn get_date(date_string: &str) -> NaiveDate {
@@ -66,14 +61,8 @@ fn get_date(date_string: &str) -> NaiveDate {
 /// Init 2 default providers. Last added is considered as default one
 fn init_providers(storage: &mut Box<dyn Storage>) -> Result<(), WeatherError> {
     if storage.get_all().is_empty() {
-        storage.add(Box::new(OpenWeatherProvider::new(
-            "OpenWeather",
-            None
-        )))?;
-        storage.add(Box::new(AccuweatherProvider::new(
-            "Accuweather",
-            None
-        )))?;
+        storage.add(Box::new(AccuweatherProvider::new("Accuweather", None)))?;
+        storage.add(Box::new(OpenWeatherProvider::new("OpenWeather", None)))?;
     }
     Ok(())
 }
@@ -96,7 +85,7 @@ fn main() -> Result<(), WeatherError> {
                 return Err(WeatherError::CliParserError("No provider found".to_owned()));
             }
         }
-        
+
         Commands::Get { address, date } => {
             let default_provider = storage.get_default_entry()?;
             let report = default_provider.get_report(address, *date)?;
@@ -114,7 +103,7 @@ fn main() -> Result<(), WeatherError> {
                         .1
                         .get_api_key()
                         .unwrap_or_else(|| "not set".to_owned()),
-                        is_default
+                    is_default
                 );
             });
         }
