@@ -8,21 +8,21 @@ providers. Currently the only one entry report contains of is temperature. Also 
 
 
 ## Test
----
+
 To run tests execute: 
 ```
 cargo test
 ```
 
 ## Build
----
+
 To build the application run:
 ```
 cargo build --release
 ```
 
 ## Usage
----
+
 
 ### List configuration:
 
@@ -34,7 +34,7 @@ Name: Accuweather, API_KEY: not set, default: false
 
 ```
 ### Configure API_KEY:
----
+
 
 To use the application it needs to be configured to have API_KEY for at least one provider which is considered as default: 
 
@@ -77,7 +77,7 @@ Configuration is saved into **json_storage.json** file. It is possible to manual
 
 
 ### Setting default provider:
----
+
 To set the default provider the weather report will be grabbed from run:
 
 `weather default <provider>`
@@ -87,7 +87,7 @@ For instance, to set Accuweather as a default run:
 `weather default Accuweather`
 
 ### Getting report
----
+
 
 Once the app is configured (**API_KEY** is set) it is time to grab some data from default provider:
 
