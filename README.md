@@ -46,7 +46,7 @@ For instance, if you want to set **API_KEY** for OpenWeather run:
 
 Application will prompt you to enter **API_KEY** for OpenWeather:
 ```
-Accuweather's API_KEY:
+OpenWeather's API_KEY:
 ````
 >***Note**: The last provider **API_KEY** is configured for automatically becomes default one.*
 
