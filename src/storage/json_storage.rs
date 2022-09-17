@@ -48,17 +48,20 @@ impl JsonStorage {
 }
 
 impl Storage for JsonStorage {
-    fn get_all(&self) -> &HashMap<String, Box<dyn WeatherProvider>> {
-        &self.configs
+    fn get_all(&self) -> Vec<&dyn WeatherProvider> {
+        self.configs
+            .values()
+            .into_iter()
+            .map(|p| p.as_ref())
+            .collect()
     }
 
     fn add(
         &mut self,
         provider: Box<dyn WeatherProvider>,
     ) -> Result<(), crate::error::WeatherError> {
-        let provider_name = provider.get_name();
         self.configs.insert(provider.get_name(), provider);
-        self.set_default_entry(&provider_name)?;
+
         self.save()?;
         Ok(())
     }
@@ -69,25 +72,26 @@ impl Storage for JsonStorage {
 
     fn delete(&mut self, key: &str) -> Result<(), WeatherError> {
         self.configs.remove(key);
-        if self.default.is_some() && self.default.as_ref().unwrap().eq(&key) {
-            self.default = None;
+        if self.default == Some(key.to_owned()) {
+            self.default = None
         }
         self.save()?;
         Ok(())
     }
 
     fn set_default_entry(&mut self, key: &str) -> Result<(), WeatherError> {
-        self.default = Some(key.to_owned());
+        self.default = Some(
+            self.get(key)
+                .map(|provider| provider.get_name())
+                .ok_or(WeatherError::NoSuchProviderError)?,
+        );
         self.save()?;
         Ok(())
     }
 
-    fn get_default_entry(&self) -> Result<&dyn WeatherProvider, WeatherError> {
-        let default = self.default.as_ref().ok_or(WeatherError::NoDefaultProviderError);
-        let provider = self.configs.get(default?).ok_or(WeatherError::NoDefaultProviderError);
-        Ok(provider?.as_ref())
+    fn get_default_entry(&mut self) -> Option<&mut Box<dyn WeatherProvider>> {
+        self.default.clone().map_or_else(|| None, |f| self.get(&f))
     }
-
 }
 
 #[cfg(test)]
@@ -104,11 +108,11 @@ mod tests {
     static M: Mutex<()> = Mutex::new(());
 
     static STORAGE_JSON_FILE: &str = "test_json_storage.json";
-    
 
     #[test]
     fn empty_storage_ok() -> TestResult {
         let _lock = M.lock()?;
+
         let storage: Box<dyn Storage> = Box::new(JsonStorage::new(STORAGE_JSON_FILE).unwrap());
         assert_eq!(0, storage.get_all().len());
         Ok(())
@@ -117,15 +121,14 @@ mod tests {
     #[test]
     fn only_one_config_ok() -> TestResult {
         let _lock = M.lock()?;
+
         let provider_name = "Weather Provider A";
         let mut storage: Box<dyn Storage> = Box::new(JsonStorage::new(STORAGE_JSON_FILE).unwrap());
-        let provider = Box::new(OpenWeatherProvider::new(
-            provider_name,
-            None
-        ));
+        let provider = Box::new(OpenWeatherProvider::new(provider_name, None));
 
         storage.add(provider).unwrap();
         assert_eq!(1, storage.get_all().len());
+
         let config = storage.get("Weather Provider A").unwrap();
         assert_eq!(None, config.get_api_key());
 
@@ -139,6 +142,7 @@ mod tests {
     #[test]
     fn delete_ok() -> TestResult {
         let _lock = M.lock()?;
+
         let provider_name = "Weather Provider A for deletion";
         let name_cloned = provider_name.clone();
         let mut storage: Box<dyn Storage> = Box::new(JsonStorage::new(STORAGE_JSON_FILE).unwrap());
@@ -150,6 +154,9 @@ mod tests {
         assert_eq!(None, config.get_api_key());
 
         storage.delete(&name_cloned).unwrap();
+
+        let result = storage.get_default_entry();
+        assert!(result.is_none());
 
         let config = storage.get(&name_cloned);
         assert!(config.is_none());

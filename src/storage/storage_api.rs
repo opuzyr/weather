@@ -1,12 +1,10 @@
-use std::collections::HashMap;
-
 use crate::{api::provider_api::WeatherProvider, error::WeatherError};
 
-/// Contains an API every kind of storage should implement. 
+/// Contains an API every kind of storage should implement.
 /// The entity the storage is currently implemented to store is one which implements [`WeatherProvider`].
 pub trait Storage {
     /// Get all providers.
-    fn get_all(&self) -> &HashMap<String, Box<dyn WeatherProvider>>;
+    fn get_all(&self) -> Vec<&dyn WeatherProvider>;
 
     /// Add new provider.
     fn add(&mut self, provider: Box<dyn WeatherProvider>) -> Result<(), WeatherError>;
@@ -21,5 +19,5 @@ pub trait Storage {
     fn set_default_entry(&mut self, key: &str) -> Result<(), WeatherError>;
 
     /// Get default entry.
-    fn get_default_entry(&self) -> Result<&dyn WeatherProvider, WeatherError>;
+    fn get_default_entry(&mut self) -> Option<&mut Box<dyn WeatherProvider>>;
 }

@@ -69,41 +69,45 @@ fn init_providers(storage: &mut Box<dyn Storage>) -> Result<(), WeatherError> {
 
 fn main() -> Result<(), WeatherError> {
     let mut storage: Box<dyn Storage> = Box::new(JsonStorage::new(JSON_STORAGE_FILE)?);
-
     init_providers(&mut storage)?;
 
     match &Args::parse().command {
-        Commands::Configure { provider_name } => {
-            let provider = storage.get(provider_name);
-            if let Some(mut provider) = provider.cloned() {
+        Commands::Configure { provider_name } => match storage.get(provider_name).cloned() {
+            Some(mut provider) => {
                 let api_key =
                     rprompt::prompt_reply_stdout(&format!("{provider_name}'s API_KEY:")).unwrap();
                 provider.set_api_key(&api_key);
                 storage.add(provider)?;
                 println!("API_KEY changed for {provider_name}");
-            } else {
-                return Err(WeatherError::CliParserError("No provider found".to_owned()));
             }
-        }
+            None => {
+                eprintln!("Error: {}", WeatherError::NoSuchProviderError)
+            }
+        },
 
-        Commands::Get { address, date } => {
-            let default_provider = storage.get_default_entry()?;
-            let report = default_provider.get_report(address, *date)?;
-            println!("{date}, {}: {report}", default_provider.get_name());
-        }
+        Commands::Get { address, date } => match storage.get_default_entry() {
+            Some(default_provider) => {
+                let report = default_provider.get_report(address, *date)?;
+                println!("{date}, {}: {report}", default_provider.get_name());
+            }
+            None => {
+                eprintln!("Error: {}", WeatherError::NoDefaultProviderError)
+            }
+        },
 
         Commands::List => {
-            let default_provider = storage.get_default_entry()?;
+            let default_provider_name = storage
+                .get_default_entry()
+                .map(|f| f.get_name())
+                .unwrap_or_default();
             storage.get_all().iter().for_each(|provider| {
-                let is_default = provider.0.eq(&default_provider.get_name());
+                let is_default = provider.get_name().eq(&default_provider_name);
                 println!(
-                    "Provider: {}, API_KEY: {}, default: {}",
-                    provider.0,
+                    "Provider: {}, API_KEY: {}, default: {is_default}",
+                    provider.get_name(),
                     provider
-                        .1
                         .get_api_key()
-                        .unwrap_or_else(|| "not set".to_owned()),
-                    is_default
+                        .unwrap_or_else(|| "not set".to_owned())
                 );
             });
         }

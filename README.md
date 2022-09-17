@@ -28,8 +28,10 @@ cargo build --release
 
 `weather list` - lists the current configuration. App shows you provider's name, **API_KEY** and whether it is default.
 
+>***Note**: There is no default provider set at first launch.*
+
 ```
-Provider: OpenWeather, API_KEY: not set, default: true
+Provider: OpenWeather, API_KEY: not set, default: false
 Provider: Accuweather, API_KEY: not set, default: false
 
 ```
@@ -48,7 +50,6 @@ Application will prompt you to enter **API_KEY** for OpenWeather:
 ```
 OpenWeather's API_KEY:
 ````
->***Note**: The last provider **API_KEY** is configured for automatically becomes default one.*
 
 Configuration is saved into **json_storage.json** file. It is possible to manually edit the content to set **API_KEY** and make a provider default one:
 
@@ -85,6 +86,7 @@ To set the default provider the weather report will be grabbed from run:
 For instance, to set Accuweather as a default run:
 
 `weather default Accuweather`
+
 
 ### Getting report
 
